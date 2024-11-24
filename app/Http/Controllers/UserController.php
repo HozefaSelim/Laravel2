@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 class UserController extends Controller
 {
     public function getAllusers(){
@@ -251,7 +252,113 @@ class UserController extends Controller
 
      }
 
+
+     
+     // casting
+     public function test5(){
+       // withcasts()
+    
+        $posts = Post::select([
+            'posts.*',
+            'comment_avg' => Comment::selectRaw('AVG(id)')
+                                        ->whereColumn('post_id' ,'Posts.id')
+        ])->withCasts([
+            'comment_avg' => 'decimal:2'
+        ])
+        ->get();
+
+        return $posts;
+     }
+
+     public function test6(){
+        $users = User::withoutGlobalScopes()->select('name','is_active')
+            ->get();
+            return $users;
+     }
+     
+     public function test8(){
+//  $user = User::find(194);
+//         Session::put('user',$user);
+// $data = session()->all();
+     
+    
+
+// dd($data);
+        $comments = Comment::all();
+        $userComments = $comments->filter(function($comment){
+                 return $comment->user_id == session('user');
+        });
+        dd( $userComments);
+      }
+
+
+
+
+     public function index(){
+        $users = User::where('is_active', 1)->get();
+        return $users;
+   }
+  
+     public function search(Request $request){
+
+
+        $users = User::where('is_active', 1)
+            ->where('id','>', 197)
+            ->get();
+            return $users;
+
+   }
+
+   public function test7(){
+
+    // each
+    // $comments = Comment::all();
+    // $comments->each(function ($comment){
+    //     unset($comment->created_at);      
+    //     //  $comment->content = "comment : " . $comment->content;
+    // });
+
+    // filter
+//     $comments =  Comment::all()->filter(function ($item){
+//         return $item->id > 10;
+//     });
+
+//     return $comments->values();
+
+        // $collections = collect([1,3,5,67,8]);
+        // $filtered = $collections->filter(function($e){
+        //     return $e > 7;
+        // });
+        // return $filtered->values();
+
+        // pluck
+        // $usersNames = User::all()->pluck('name' );
+        // return $usersNames;
+
+        // countby
+        // $commentCounts = Comment::all()->countBy('post_id');
+        // return $commentCounts;
+
+        // map
+        // $old_users = User::all();
+        // $users = $old_users->map(function ($user){
+        //     return [
+        //         'User_name' => $user->name,
+        //         'User_email' => $user->email,
+        //     ];
+        // });
+
+        // return $old_users;
+
+        $user = User::find(195);
+
+   //  $users = User::orderBy('days_active')->get();
+     $users = User::all()->sortBy('days_active');
+
+        return $users;
+    }
 }
+
 
 
 

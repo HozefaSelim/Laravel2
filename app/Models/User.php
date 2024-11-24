@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Scopes\ActiveScope;
 use App\Models\Scopes\IsActiveScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -43,15 +44,25 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'prefeneces' => 'array'
     ];
+    
 
+
+    // first method to make global scope 
+        protected static function booted(){
+            // static::addGlobalScope('active',function (Builder $builder){
+            //     $builder->where('is_active',1);
+            // });
+          //  static::addGlobalScope(new ActiveScope);
+        }
     // Accessory
-    public function getNameAttribute($value){
-        //return strtoupper($value);
-        return "MR" . '.'. $value; 
+    // public function getNameAttribute($value){
+    //     //return strtoupper($value);
+    //     return "MR" . '.'. $value; 
  
-    }
+    // }
     // new Attribute
     public function getIdNameAttribute($value){
         
@@ -60,11 +71,19 @@ class User extends Authenticatable
     }
 
      // Mutator
-     public function setNameAttribute($value){
-        $this->attributes['name'] = $value .'_user';
-    }
+    //  public function setNameAttribute($value){
+    //     $this->attributes['name'] = $value .'_user';
+    // }
 
+
+    // public function scopeActive($query){
+    //     return $query->where('is_active',1);
+    // }
     
+
+    public function getDaysActiveAttribute(){
+        return $this->created_at->diffInDays($this->updated_at);
+    }
    
      
 

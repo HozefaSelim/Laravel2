@@ -33,4 +33,8 @@ Route::get('/test3' , [UserController::class , 'test3']);
 
 Route::get('/test4' , [UserController::class , 'test4']);
 
+Route::get('/test5' , [UserController::class , 'test5']);
+
+Route::get('/test6' , [UserController::class , 'test6']);
+Route::get('/test7' , [UserController::class , 'test7']);
 
